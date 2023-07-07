@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 
+
 const WelcomePage = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({

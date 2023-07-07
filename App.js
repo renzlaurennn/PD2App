@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import WelcomePage from './screens/welcomePage';
 import Values from './screens/Values';
 
+
 import { sendEmail } from './api/email';
 
 const Stack = createStackNavigator();

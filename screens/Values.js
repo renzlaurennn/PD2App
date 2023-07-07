@@ -7,6 +7,7 @@ import { db, ref, onValue } from '../firebase';
 import { update } from 'firebase/database';
 
 let timer;
+let forceStop = false;
 
 const Values = ({ onCrashDetected }) => {
   const [X, setX] = useState(0);
@@ -49,7 +50,21 @@ const Values = ({ onCrashDetected }) => {
   }, [db]);
 
   useEffect(() => {
+    const data = ref(db);
     if (countdown <= 0) {
+      if (crashType == "Major" && forceStop == false){
+        const datapass = { 
+          SendSMSStat: 2,
+         }
+        update(data, datapass);
+      } else if (crashType == "Minor" && forceStop == false){
+        const datapass = { 
+          SendSMSStat: 1,
+         }
+        update(data, datapass);
+      }
+      forceStop = false;
+      setCrashType("");
       stopCountdown();
     }
   }, [countdown]);
@@ -59,16 +74,23 @@ const Values = ({ onCrashDetected }) => {
 
     if (CountdownStat == 2) {
       console.log("Major Crash");
+      setCrashType("Major");
       // Major crash detected
       // Start the countdown timer
       countdownFunc(5);
-      const datapass = { SendSMSStat: 2 }
+      const datapass = { 
+        CountdownStat: 0
+       }
       update(data, datapass);
     } else if (CountdownStat == 1) {
       console.log("Minor Crash");
-    
+      setCrashType("Minor");
+      // Major crash detected
+      // Start the countdown timer
       countdownFunc(5);
-      const datapass = { SendSMSStat: 1 }
+      const datapass = { 
+        CountdownStat: 0
+       }
       update(data, datapass);
     }
   };
@@ -108,6 +130,7 @@ const Values = ({ onCrashDetected }) => {
   }, [navigation]);
 
   const Press = () => {
+    forceStop = true;
     stopCountdown();
   };
 
@@ -181,15 +204,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'white',
     position: 'absolute',
-    bottom: 20,
-    left: 100,
+    bottom: 50,
+    left: 190,
   },
   TimeTakenValue: {
     fontSize: 12,
     color: 'white',
     position: 'absolute',
-    bottom: 50,
-    left: 250,
+    bottom: 20,
+    left: 100,
   },
   button: {
     width: 150,
