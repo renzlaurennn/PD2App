@@ -1,14 +1,31 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+// emergencyInformation.js
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 
-const emergencyInformation = () => {
+const EmergencyInformation = ({ navigation }) => {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: '#34315E',
+      },
+      headerTintColor: '#FFF',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    });
+  }, [navigation]);
+
+  const handleButtonPress = () => {
+    navigation.navigate('EmergencyInformation');
+  };
+
   return (
     <View>
-      <Text>emergencyInformation</Text>
+      <Text style={styles.title}>Emergency </Text>
     </View>
-  )
-}
+  );
+};
 
-export default emergencyInformation
+const styles = StyleSheet.create({});
 
-const styles = StyleSheet.create({})
+export default EmergencyInformation;

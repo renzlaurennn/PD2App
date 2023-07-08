@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 
-
 const WelcomePage = ({ navigation }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -12,11 +11,12 @@ const WelcomePage = ({ navigation }) => {
       headerTitleStyle: {
         fontWeight: 'bold',
       },
+      headerTitle: "decide-later", 
     });
   }, [navigation]);
 
-  const handleButtonPress = () => {
-    navigation.navigate('Values');
+  const handleButtonPress = (destination) => {
+    navigation.navigate(destination);
   };
 
   return (
@@ -24,10 +24,12 @@ const WelcomePage = ({ navigation }) => {
       <Image source={require('../assets/welcome.png')} style={styles.logo} resizeMode="contain" />
       <Text style={styles.title}>Welcome to BikeBox!</Text>
       <Text style={styles.description}>Introducing BikeBox, the app that prioritizes cyclist safety. With crash detection technology and real-time monitoring, BikeBox provides immediate alerts in case of an impact. Additionally, BikeBox's advanced geo-mapping feature automatically contacts the local emergency hotline if an accident occurs</Text>
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+      <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('ComfortPage')}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
-      <Text style={styles.skipText}>Skip for now</Text>
+      <TouchableOpacity style={styles.skipText} onPress={() => handleButtonPress('Values')}>
+        <Text style={styles.skipText}>Skip for now</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -66,12 +68,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: '#6B63F6', // Set the background color to white (#FFF)
+    backgroundColor: '#6B63F6',
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#ffff', // Set the button text color to a shade of purple (#6B63F6)
+    color: '#ffff',
     fontSize: 16,
     fontWeight: 'bold',
   },

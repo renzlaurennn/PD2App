@@ -22,7 +22,7 @@
     "react-native": "0.71.8",
     "react-native-alert": "^1.0.3",
     "react-native-modal": "^13.0.1",
-    "react-native-svg": "13.4.0",
+    "react-native-svg": "^13.4.0",
     "react-native-svg-uri": "^1.2.3"
   },
   "devDependencies": {
