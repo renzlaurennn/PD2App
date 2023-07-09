@@ -7,6 +7,8 @@ import WelcomePage from './screens/welcomePage';
 import Values from './screens/Values';
 import EmergencyInformation from './screens/emergencyInformation';
 import ComfortPage from './screens/comfortPage';
+import CallForEmergency from './screens/callForEmegency';
+import CrashPage from './screens/crashPage';
 
 import { sendEmail } from './api/email';
 
@@ -17,6 +19,9 @@ const MainStack = () => (
   <Stack.Navigator initialRouteName="Welcome">
     <Stack.Screen name="Welcome" component={WelcomePage} />
     <Stack.Screen name="Values" component={Values} />
+    <Stack.Screen name="ComfortPage" component={ComfortPage} />
+    <Stack.Screen name="CallForEmergency" component={CallForEmergency} />
+    <Stack.Screen name="CrashPage" component={CrashPage} />
   </Stack.Navigator>
 );
 
@@ -46,10 +51,17 @@ export default function App() {
           options={{ presentation: 'modal' }}
         />
         <RootStack.Screen
-          name="EmergencyInformation"
-          component={EmergencyInformation}
+          name="CallForEmergency"
+          component={CallForEmergency}
           options={{ presentation: 'modal' }}
         />
+        <RootStack.Screen
+          name="CrashPage"
+          component={CrashPage}
+         options={{ headerShown: false }}
+        />
+        
+
       </RootStack.Navigator>
     </NavigationContainer>
   );

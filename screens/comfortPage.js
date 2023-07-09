@@ -15,8 +15,8 @@ const ComfortPage = ({ navigation }) => {
     });
   }, [navigation]);
 
-  const handleButtonPress = () => {
-    navigation.navigate('EmergencyInformation');
+  const handleButtonPress = (destination) => {
+    navigation.navigate(destination);
   };
 
   return (
@@ -26,9 +26,13 @@ const ComfortPage = ({ navigation }) => {
       <Text style={styles.description}>
         Introducing BikeBox, the app that prioritizes cyclist safety. With crash detection technology and real-time monitoring, BikeBox provides immediate alerts in case of an impact. Additionally, BikeBox's advanced geo-mapping feature automatically contacts the local emergency hotline if an accident occurs
       </Text>
-      <TouchableOpacity style={styles.button} onPress={handleButtonPress}>
+      <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('CallForEmergency')}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.skipText} onPress={() => handleButtonPress('Values')}>
+        <Text style={styles.skipText}>Skip for now</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 };

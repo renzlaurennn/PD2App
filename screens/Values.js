@@ -1,10 +1,12 @@
 // Values.js
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Vibration } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { db, ref, onValue } from '../firebase';
 import { update } from 'firebase/database';
+import { Audio } from 'expo-av';
+
 
 let timer;
 let forceStop = false;
@@ -99,8 +101,29 @@ const Values = ({ onCrashDetected }) => {
     clearInterval(timer);
     setCountdown(seconds);
 
+    alarmSound = new Audio.Sound();
+
+    const loadSound = async () => {
+      try {
+        await alarmSound.loadAsync(require('../alarm.mp3'));
+      } catch (error) {
+        console.log('Failed to load the sound', error);
+      }
+    };
+
+    loadSound();
+
     timer = setInterval(() => {
-      setCountdown((prevCountdown) => prevCountdown - 1);
+      setCountdown((prevCountdown) => {
+        if (prevCountdown === 1) {
+          Vibration.cancel();
+          stopCountdown();
+          return 0;
+        }
+        Vibration.vibrate(500);
+        playSound();
+        return prevCountdown - 1;
+      });
     }, 1000);
   };
 
@@ -109,7 +132,25 @@ const Values = ({ onCrashDetected }) => {
     timer = null;
     setCountdown(0);
     console.log("Countdown Force Stop");
-  }
+    stopSound();
+  };
+
+  const playSound = async () => {
+    try {
+      await alarmSound.replayAsync();
+    } catch (error) {
+      console.log('Failed to play the sound', error);
+    }
+  };
+
+  const stopSound = async () => {
+    try {
+      await alarmSound.stopAsync();
+      await alarmSound.unloadAsync();
+    } catch (error) {
+      console.log('Failed to stop the sound', error);
+    }
+  };
 
   const sendSMS = (crashType) => {
     // Implement your SMS sending logic here
@@ -126,6 +167,7 @@ const Values = ({ onCrashDetected }) => {
       headerTitleStyle: {
         fontWeight: 'bold',
       },
+      headerTitle: '',
     });
   }, [navigation]);
 
@@ -140,12 +182,13 @@ const Values = ({ onCrashDetected }) => {
       <TouchableOpacity style={styles.button} onPress={Press}>
         <Text style={styles.buttonText}>Cancel S.O.S</Text>
       </TouchableOpacity>
+      <Text style={styles.countDownDescription}>Countdown will begin once the system detect potential crash accident</Text>
       {countdown > 0 && (
-        <Text style={styles.countdownText}>Countdown: {countdown}</Text>
+        <Text style={styles.countdownText}>{countdown}</Text>
       )}
-      <Text style={styles.xValue}>X: {X}</Text>
+      {/* <Text style={styles.xValue}>X: {X}</Text>
       <Text style={styles.yValue}>Y: {Y}</Text>
-      <Text style={styles.zValue}>Z: {Z}</Text>
+      <Text style={styles.zValue}>Z: {Z}</Text> */}
       <Text style={styles.LatitudeValue}>Latitude: {Latitude}</Text>
       <Text style={styles.LongitudeValue}>Longitude: {Longitude}</Text>
       <Text style={styles.TimeTakenValue}>TimeTaken: {TimeTaken}</Text>
@@ -167,10 +210,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     position: 'absolute',
-    top: 130,
+    top: 110,
     left: 130,
     transform: [{ translateX: -50 }, { translateY: -50 }],
     color: 'white',
+  },
+  countDownDescription: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.81)',
+    bottom: 40,
+    textAlign: 'center',
+
   },
   xValue: {
     fontSize: 12,
@@ -231,11 +281,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   countdownText: {
-    fontSize: 20,
+    fontSize: 40,
     color: 'white',
     position: 'absolute',
-    top: 350,
+    top: 380,
     fontWeight: 'bold',
+    textAlign: 'center'
   },
 });
 
