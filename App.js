@@ -10,7 +10,7 @@ import ComfortPage from './screens/comfortPage';
 import CallForEmergency from './screens/callForEmegency';
 import CrashPage from './screens/crashPage';
 
-import { sendEmail } from './api/email';
+
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();

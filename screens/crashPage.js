@@ -36,14 +36,18 @@ const CrashPage = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Values')}>
         <Text style={styles.buttonText}>See how sensor works</Text>
       </TouchableOpacity>
-        <Image source={require('../assets/warning.png')} style={styles.logoWarning} resizeMode="contain" />
+       
       <View style={styles.rectanglebgSetup} >
-        <Text style={styles.textSetup}>
+      <View style={styles.overlay}>
+      <Image source={require('../assets/warning.png')} style={styles.logoWarning} resizeMode="contain" />     
+      <Text style={styles.textSetup}>
             You haven't setup your accout.
         </Text>
         <TouchableOpacity style={styles.skipText} onPress={() => handleButtonPress('Values')}>
         <Text style={styles.setUpAcctNow}> Set up account now.</Text>
       </TouchableOpacity>
+      
+      </View>
       </View>
     </View>
   );
@@ -59,13 +63,13 @@ const styles = StyleSheet.create({
   logo: {
     width: 30,
     height: 25,
-    bottom: 280,
+    bottom: 270,
     left: 145,
   },
   logoWarning: {
     width: 30,
     height: 25,
-    bottom: 320,
+    bottom: -25,
     right: 120,
   },
   title: {
@@ -85,18 +89,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 0,
     opacity: 0.7,
-
+  },
+  overlay: {
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 12,
   },
   textSetup: {
     color: 'white',
     fontSize: 9,
-    fontWeight: 'regular',
+    fontWeight: 'bold',
     textAlign: 'center',
     alignSelf: 'center',
   },
   setUpAcctNow: {
     color: '#f9e154',
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: 'bold',
     textAlign: 'center',
   },
@@ -112,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 10,
-    top: -240,
+    top: -230,
     right: 80,
     color: '#FFFF',
   },
