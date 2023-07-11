@@ -7,9 +7,14 @@ import { db, ref, onValue } from '../firebase';
 import { update } from 'firebase/database';
 import { Audio } from 'expo-av';
 
+import axios from 'axios'
 
 let timer;
 let forceStop = false;
+
+const TARGET_EMAIL = "renzlaurennn@gmail.com"
+
+const alarmSound = new Audio.Sound();
 
 const Values = ({ onCrashDetected }) => {
   const [X, setX] = useState(0);
@@ -82,7 +87,7 @@ const Values = ({ onCrashDetected }) => {
       countdownFunc(5);
       const datapass = { 
         CountdownStat: 0
-       }
+      }
       update(data, datapass);
     } else if (CountdownStat == 1) {
       console.log("Minor Crash");
@@ -92,16 +97,14 @@ const Values = ({ onCrashDetected }) => {
       countdownFunc(5);
       const datapass = { 
         CountdownStat: 0
-       }
+      }
       update(data, datapass);
     }
   };
 
   const countdownFunc = (seconds) => {
-    clearInterval(timer);
+    // clearInterval(timer);
     setCountdown(seconds);
-
-    alarmSound = new Audio.Sound();
 
     const loadSound = async () => {
       try {
@@ -118,10 +121,13 @@ const Values = ({ onCrashDetected }) => {
         if (prevCountdown === 1) {
           Vibration.cancel();
           stopCountdown();
+          sendEmail(TARGET_EMAIL)
           return 0;
         }
+
         Vibration.vibrate(500);
         playSound();
+        
         return prevCountdown - 1;
       });
     }, 1000);
@@ -157,6 +163,26 @@ const Values = ({ onCrashDetected }) => {
     // You can use any SMS sending library or API
     console.log(`Sending SMS for ${crashType} crash`);
   };
+
+  // method for triggering the Email notification logic
+  const sendEmail = (email) => {
+    const url = "http://localhost:3000/api/v1/mail/notify_email"
+
+    const data = {
+      email,
+      subject: "Crash Emergency"
+    }
+
+    axios.post(url, data, {
+      'Content-Type': 'application/json'
+    }).then(res => {
+      // show prompt that the request is successful
+      console.log(res.data)
+    }).catch(err => {
+      // show prompt that the request failed
+      console.error(err)
+    })
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({
