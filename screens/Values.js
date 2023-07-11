@@ -105,7 +105,7 @@ const Values = ({ onCrashDetected }) => {
 
     const loadSound = async () => {
       try {
-        await alarmSound.loadAsync(require('../alarm.mp3'));
+        await alarmSound.loadAsync(require('../bruh.mp3'));
       } catch (error) {
         console.log('Failed to load the sound', error);
       }

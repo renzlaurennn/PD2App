@@ -43,7 +43,7 @@ const CrashPage = ({ navigation }) => {
       <Text style={styles.textSetup}>
             You haven't setup your accout.
         </Text>
-        <TouchableOpacity style={styles.skipText} onPress={() => handleButtonPress('Values')}>
+        <TouchableOpacity style={styles.skipText} onPress={() => handleButtonPress('AccountSetup')}>
         <Text style={styles.setUpAcctNow}> Set up account now.</Text>
       </TouchableOpacity>
       
