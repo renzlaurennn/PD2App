@@ -10,6 +10,7 @@
     "clean": "rm -rf build"
   },
   "dependencies": {
+    "@expo/webpack-config": "18.0.1",
     "@react-native-async-storage/async-storage": "1.17.11",
     "@react-native-firebase/app": "^18.1.0",
     "@react-native-firebase/database": "^18.1.0",
@@ -25,6 +26,7 @@
     "firebase": "^9.23.0",
     "nodemailer": "^6.9.3",
     "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-native": "0.71.8",
     "react-native-alert": "^1.0.3",
     "react-native-dropdown-picker": "^5.4.6",
@@ -36,7 +38,8 @@
     "react-native-sound": "^0.11.2",
     "react-native-sound-player": "^0.13.2",
     "react-native-svg": "^13.4.0",
-    "react-native-svg-uri": "^1.2.3"
+    "react-native-svg-uri": "^1.2.3",
+    "react-native-web": "~0.18.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
