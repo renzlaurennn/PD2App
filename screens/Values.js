@@ -9,6 +9,8 @@ import { Audio } from 'expo-av';
 
 import axios from 'axios'
 
+import { socket } from '../utils/socket'
+
 let timer;
 let forceStop = false;
 
@@ -32,6 +34,9 @@ const Values = ({ onCrashDetected }) => {
   useEffect(() => {
     const data = ref(db);
 
+	// establish socket connection with PD2-ENS server
+	socket.on()
+
     onValue(data, (snapshot) => {
       setX(snapshot.val().X);
       setY(snapshot.val().Y);
@@ -52,8 +57,12 @@ const Values = ({ onCrashDetected }) => {
         setCountdownStat(newCountdownStat);
         checkCrashes(newCountdownStat);
       }
-      
     });
+
+	return () => {
+	  // disconnect as soon as the component unmounts
+	  socket.off()
+	}
   }, [db]);
 
   useEffect(() => {
@@ -167,13 +176,16 @@ const Values = ({ onCrashDetected }) => {
   // method for triggering the Email notification logic
   
   const sendEmail = (email) => {
-    const url = "http://192.168.1.24:3000/api/v1/mail/notify_email" // Change the IPv4 of HTTPS
+	// send a request for the PD2-ENS server to send an email notification
+    const url = "https://pd2-ens.onrender.com/api/v1/mail/notify_email"
 
     // Email Subject Title
     const data = {
       email,
       subject: "Crash Emergency",
-      crashType
+	  payload: {
+		crashType
+	  }
     }
 
     axios.post(url, data, {

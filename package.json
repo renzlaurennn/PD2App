@@ -39,7 +39,8 @@
     "react-native-sound-player": "^0.13.2",
     "react-native-svg": "^13.4.0",
     "react-native-svg-uri": "^1.2.3",
-    "react-native-web": "~0.18.10"
+    "react-native-web": "~0.18.10",
+    "socket.io-client": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
