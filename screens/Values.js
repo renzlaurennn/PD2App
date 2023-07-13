@@ -183,7 +183,9 @@ const Values = ({ onCrashDetected }) => {
     const data = {
       email,
       subject: "Crash Emergency",
-      crashType
+	  payload: {
+		crashType
+	  }
     }
 
     axios.post(url, data, {
