@@ -121,7 +121,7 @@ const Values = ({ onCrashDetected }) => {
         if (prevCountdown === 1) {
           Vibration.cancel();
           stopCountdown();
-          sendEmail(TARGET_EMAIL)
+          sendEmail(TARGET_EMAIL, crashType)
           return 0;
         }
 
@@ -165,12 +165,15 @@ const Values = ({ onCrashDetected }) => {
   };
 
   // method for triggering the Email notification logic
+  
   const sendEmail = (email) => {
-    const url = "http://localhost:3000/api/v1/mail/notify_email"
+    const url = "http://192.168.1.24:3000/api/v1/mail/notify_email" // Change the IPv4 of HTTPS
 
+    // Email Subject Title
     const data = {
       email,
-      subject: "Crash Emergency"
+      subject: "Crash Emergency",
+      crashType
     }
 
     axios.post(url, data, {
@@ -198,6 +201,12 @@ const Values = ({ onCrashDetected }) => {
   }, [navigation]);
 
   const Press = () => {
+    const data = ref(db);
+    const datapass = {
+      CheckMPU: false
+    }
+    update(data, datapass);
+
     forceStop = true;
     stopCountdown();
   };
@@ -215,9 +224,9 @@ const Values = ({ onCrashDetected }) => {
       {/* <Text style={styles.xValue}>X: {X}</Text>
       <Text style={styles.yValue}>Y: {Y}</Text>
       <Text style={styles.zValue}>Z: {Z}</Text> */}
-      <Text style={styles.LatitudeValue}>Latitude: {Latitude}</Text>
+      {/* <Text style={styles.LatitudeValue}>Latitude: {Latitude}</Text>
       <Text style={styles.LongitudeValue}>Longitude: {Longitude}</Text>
-      <Text style={styles.TimeTakenValue}>TimeTaken: {TimeTaken}</Text>
+      <Text style={styles.TimeTakenValue}>TimeTaken: {TimeTaken}</Text> */}
     </View>
   );
 };

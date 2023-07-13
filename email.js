@@ -13,7 +13,7 @@ const sendEmail = (crashType) => {
     // Define the email message
     const mailOptions = {
       from: 'pd2bikebox@gmail.com', // Include the full email address
-      to: 'renzlaurennn@gmail.com',
+      to: 'jc.desepeda@gmail.com', // Recipient Address
       subject: 'Crash Alert',
       text: `A ${crashType} crash has been detected.`
     };
