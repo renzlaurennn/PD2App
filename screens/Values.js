@@ -3,8 +3,8 @@ import React, { useEffect, useState, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Vibration } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { db, ref, onValue } from '../firebase';
-import { update } from 'firebase/database';
+import { firebaseApp } from '../firebase';
+import { update, onValue, getDatabase, ref } from 'firebase/database';
 import { Audio } from 'expo-av';
 
 import axios from 'axios'
@@ -17,6 +17,8 @@ let forceStop = false;
 const TARGET_EMAIL = "renzlaurennn@gmail.com"
 
 const alarmSound = new Audio.Sound();
+
+const db = getDatabase(firebaseApp)
 
 const Values = ({ onCrashDetected }) => {
   const [X, setX] = useState(0);
@@ -32,38 +34,52 @@ const Values = ({ onCrashDetected }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const data = ref(db);
+    // const data = ref(db)
 
-	// establish socket connection with PD2-ENS server
-	socket.on()
+    const refX = ref(db, 'X')
+    const refY = ref(db, 'Y')
+    const refZ = ref(db, 'Z')
 
-    onValue(data, (snapshot) => {
-      setX(snapshot.val().X);
-      setY(snapshot.val().Y);
-      setZ(snapshot.val().Z);
-      setLatitude(snapshot.val().Latitude);
-      setLongitude(snapshot.val().Longitude);
-      setTimeTaken(snapshot.val().TimeTaken);
-      // setCountdownStat(snapshot.val().CountdownStat);
-      const newCountdownStat = snapshot.val().CountdownStat;
+    const refLat = ref(db, 'Latitude')
+    const refLon = ref(db, 'Longitude')
 
-      window.Longitude = snapshot.val().Longitude;
-      window.Latitude = snapshot.val().Latitude;
-      window.TimeTaken = snapshot.val().TimeTaken;
-      // Check for crashes
-      // checkCrashes(snapshot.val().X, snapshot.val().Y, snapshot.val().Z);
-      // checkCrashes(snapshot.val().CountdownStat);
+    const refTimeTaken = ref(db, 'TimeTaken')
+    const refCountdownStat = ref(db, 'CountdownStat')
+
+	  // establish socket connection with PD2-ENS server
+	  socket.on()
+
+    onValue(refX, snapshot => setX(snapshot.val()))
+    onValue(refY, snapshot => setY(snapshot.val()))
+    onValue(refZ, snapshot => setZ(snapshot.val()))
+    onValue(refLat, snapshot => setLatitude(snapshot.val()))
+    onValue(refLon, snapshot => setLongitude(snapshot.val()))
+    onValue(refTimeTaken, snapshot => setTimeTaken(snapshot.val()))
+    onValue(refCountdownStat, snapshot => {
+      const newCountdownStat = snapshot.val()
+
+      setCountdownStat(newCountdownStat)
+
       if (newCountdownStat !== CountdownStat) {
-        setCountdownStat(newCountdownStat);
-        checkCrashes(newCountdownStat);
-      }
-    });
+        setCountdownStat(newCountdownStat)
 
-	return () => {
-	  // disconnect as soon as the component unmounts
-	  socket.off()
-	}
-  }, [db]);
+        const data = { 
+          x: X,
+          y: Y,
+          z: Z,
+          lat: Latitude,
+          lon: Longitude
+        }
+
+        checkCrashes(newCountdownStat, data)
+      }
+    })
+
+    return () => {
+      // disconnect as soon as the component unmounts
+      socket.off()
+    }
+  }, [X, Y, Z, Latitude, Longitude, CountdownStat]);
 
   useEffect(() => {
     const data = ref(db);
@@ -85,7 +101,7 @@ const Values = ({ onCrashDetected }) => {
     }
   }, [countdown]);
 
-  const checkCrashes = (CountdownStat) => {
+  const checkCrashes = (countdownStat, crashData) => {
     const data = ref(db);
 
     if (CountdownStat == 2) {
@@ -93,7 +109,7 @@ const Values = ({ onCrashDetected }) => {
       setCrashType("Major");
       // Major crash detected
       // Start the countdown timer
-      countdownFunc(5);
+      countdownFunc(5, data);
       const datapass = { 
         CountdownStat: 0
       }
@@ -103,7 +119,7 @@ const Values = ({ onCrashDetected }) => {
       setCrashType("Minor");
       // Major crash detected
       // Start the countdown timer
-      countdownFunc(5);
+      countdownFunc(5, crashData);
       const datapass = { 
         CountdownStat: 0
       }
@@ -111,7 +127,7 @@ const Values = ({ onCrashDetected }) => {
     }
   };
 
-  const countdownFunc = (seconds) => {
+  const countdownFunc = (seconds, crashData) => {
     // clearInterval(timer);
     setCountdown(seconds);
 
@@ -130,7 +146,7 @@ const Values = ({ onCrashDetected }) => {
         if (prevCountdown === 1) {
           Vibration.cancel();
           stopCountdown();
-          sendEmail(TARGET_EMAIL)
+          sendEmail(TARGET_EMAIL, crashData)
           return 0;
         }
 
@@ -175,7 +191,7 @@ const Values = ({ onCrashDetected }) => {
 
   // method for triggering the Email notification logic
   
-  const sendEmail = (email) => {
+  const sendEmail = (email, crashData) => {
 	  // send a request for the PD2-ENS server to send an email notification
     const url = "https://pd2-ens.onrender.com/api/v1/mail/notify_email"
 
@@ -184,8 +200,13 @@ const Values = ({ onCrashDetected }) => {
       email,
       subject: "Crash Emergency",
 	    payload: {
-		    crashType: (crashType.length > 0) ? crashType : "Untriaged Crash"
+		    crashType: (crashType.length > 0) ? crashType : "Untriaged Crash",
+        location: null
 	    }
+    }
+
+    if (Latitude > 0 && Longitude > 0) {
+      data.payload.location = `${Latitude}, ${Longitude}`
     }
 
     axios.post(url, data, {
