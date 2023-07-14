@@ -130,7 +130,7 @@ const Values = ({ onCrashDetected }) => {
         if (prevCountdown === 1) {
           Vibration.cancel();
           stopCountdown();
-          sendEmail(TARGET_EMAIL, crashType)
+          sendEmail(TARGET_EMAIL)
           return 0;
         }
 
@@ -176,16 +176,16 @@ const Values = ({ onCrashDetected }) => {
   // method for triggering the Email notification logic
   
   const sendEmail = (email) => {
-	// send a request for the PD2-ENS server to send an email notification
+	  // send a request for the PD2-ENS server to send an email notification
     const url = "https://pd2-ens.onrender.com/api/v1/mail/notify_email"
 
     // Email Subject Title
     const data = {
       email,
       subject: "Crash Emergency",
-	  payload: {
-		crashType
-	  }
+	    payload: {
+		    crashType: (crashType.length > 0) ? crashType : "Untriaged Crash"
+	    }
     }
 
     axios.post(url, data, {
@@ -225,7 +225,7 @@ const Values = ({ onCrashDetected }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: '#34315E' }]}>
-      <Text style={styles.title}>Crash Detection</Text>
+      <Text style={styles.title}>Crash Detection (Crash Type: { crashType })</Text>
       <TouchableOpacity style={styles.button} onPress={Press}>
         <Text style={styles.buttonText}>Cancel S.O.S</Text>
       </TouchableOpacity>
