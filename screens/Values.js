@@ -225,7 +225,7 @@ const Values = ({ onCrashDetected }) => {
 
   return (
     <View style={[styles.container, { backgroundColor: '#34315E' }]}>
-      <Text style={styles.title}>Crash Detection (Crash Type: { crashType })</Text>
+      <Text style={styles.title}>Crash Detection</Text>
       <TouchableOpacity style={styles.button} onPress={Press}>
         <Text style={styles.buttonText}>Cancel S.O.S</Text>
       </TouchableOpacity>
